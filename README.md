@@ -57,10 +57,11 @@ O Backend deve ser iniciado primeiro, porque o Frontend depende dele para fazer 
    Abra o diretório calculadora-TOTVS/backend/calculadora-emprestimos no terminal
 
 2. Compile o Projeto  
-   Utilize o seguinte comando para o Maven compilar e empacotar a aplicação:  
+   Utilize o seguinte comando para o Maven compilar e empacotar a aplicação:
+   
    ./mvnw clean package
 
-3. Execute o JAR  
+4. Execute o JAR  
    Inicie o servidor Spring Boot com o arquivo JAR gerado em backend/calculadora-emprestimos/target que terá o nome totvs-calculator-api-0.0.1-SNAPSHOT.jar com o comando:
    
    java \-jar target/totvs-calculator-api-0.0.1-SNAPSHOT.jar
