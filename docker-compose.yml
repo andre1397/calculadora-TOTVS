@@ -1,0 +1,40 @@
+services:
+  # ==============================
+  # 1. SERVIÇO BACKEND (SPRING BOOT)
+  # ==============================
+  backend:
+    # Instrução para construir a imagem a partir da pasta 'backend/'
+    build:
+      context: ./backend/calculadora-emprestimos
+      dockerfile: Dockerfile
+    
+    # Mapeia a porta 8080 do container para a porta 8080 do seu host
+    ports:
+      - "8080:8080"
+      
+    # Variáveis de ambiente (opcional, mas bom para configurar o DB, se houver)
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      
+    # Define o nome do container
+    container_name: loan_calc_backend
+
+  # ==============================
+  # 2. SERVIÇO FRONTEND (REACT + NGINX)
+  # ==============================
+  frontend:
+    # Instrução para construir a imagem a partir da pasta 'frontend/'
+    build:
+      context: ./frontend/calculadora-emprestimos-ui
+      dockerfile: Dockerfile
+      
+    # Mapeia a porta 80 do container Nginx para a porta 3000 do seu host
+    ports:
+      - "3000:80" 
+      
+    # Garante que o frontend só suba após o backend estar pronto
+    depends_on:
+      - backend
+      
+    # Define o nome do container
+    container_name: loan_calc_frontend
