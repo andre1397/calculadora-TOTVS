@@ -70,7 +70,7 @@ O Backend deve ser iniciado primeiro, porque o Frontend depende dele para fazer 
 
 ### **2.3. Iniciando o Frontend (React)**
 
-1. **Navegue até o diretório do Frontend:**  
+1. **Navegue até o diretório do Frontend**  
    Abra o diretório calculadora-TOTVS/frontend/calculadora-emprestimos-ui no terminal
 
 2. **Instale as Dependências**
