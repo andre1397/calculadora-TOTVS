@@ -1,31 +1,28 @@
 # **Calculadora de Empréstimos**
 
-Este projeto é uma aplicação full-stack para cálculo de amortização de empréstimos, composta por dois serviços:
+Este projeto é uma aplicação full-stack para cálculo e geração de uma tabela de amortização de empréstimos, composta por dois serviços:
 
 1. **Backend (Java Spring Boot):** Uma API REST que contém a lógica de negócios e os algoritmos de cálculo.  
-2. **Frontend (React):** Uma interface de usuário moderna para entrada de dados e visualização dos resultados em uma tabela de amortização.
+2. **Frontend (React):** Uma interface de usuário para entrada de dados e visualização dos resultados em uma tabela de amortização.
 
-O objetivo deste documento é fornecer instruções claras para que qualquer pessoa consiga executar o projeto em seu ambiente.
-
-## **1\. Execução com Docker (Método Recomendado)**
-
-A utilização do Docker e Docker Compose é o método mais rápido e confiável, pois isola as dependências e garante que a aplicação rode em um ambiente padronizado.
+## **1\. Execução com Docker**
 
 ### **Pré-requisitos**
 
-* **Docker:** Instalado e rodando (incluindo o Docker Compose).
+* **Docker:** Instalado e rodando na máquina.
 
 ### **Passos para Iniciar**
 
-1. Navegue até o Diretório Raiz  
-   Certifique-se de estar no diretório que contém o arquivo docker-compose.yml.  
-2. Construa e Inicie os Contêineres  
-   Execute o comando a seguir. O argumento \--build forçará a construção das imagens Java e Node/Nginx com base nos seus Dockerfiles, garantindo que o código mais recente seja empacotado.  
+1. Construa e Inicie os Contêineres  
+   Abra no terminal a pasta raiz da aplicação onde está localizado o arquivo docker-compose e execute o comando:
+
    docker-compose up \--build \-d
 
+   * O argumento \--build forçará a construção das imagens Java e Node/Nginx com base nos Dockerfiles contidos no backend e no frontend.  
+
    * O comando \-d (detach) executa os contêineres em segundo plano.  
-3. Acesse a Aplicação  
-   Após o Docker Compose finalizar o build e a inicialização (o que pode levar alguns minutos na primeira vez), os serviços estarão disponíveis:  
+2. Acesse a Aplicação  
+   Após o Docker Compose finalizar o build e a inicialização, os seguintes serviços estarão disponíveis:  
    * **Frontend (Calculadora):** http://localhost:3000  
    * **Backend (API):** http://localhost:8080 (Acesso direto à API para testes).
 
@@ -39,7 +36,7 @@ A utilização do Docker e Docker Compose é o método mais rápido e confiável
 
 ## **2\. Execução Local (Sem Docker)**
 
-Este método é ideal para desenvolvedores que precisam modificar o código-fonte (Backend ou Frontend). Requer a instalação manual das dependências de cada ambiente.
+Requer a instalação manual das dependências de cada ambiente.
 
 ### **2.1. Pré-requisitos Locais**
 
@@ -52,25 +49,25 @@ Este método é ideal para desenvolvedores que precisam modificar o código-font
 
 ### **2.2. Iniciando o Backend (Java Spring Boot)**
 
-O backend deve ser iniciado primeiro, pois o frontend depende dele.
+O backend deve ser iniciado primeiro, porque o frontend depende dele para fazer os cálculos.
 
 1. **Navegue até o diretório do backend:**  
-   cd backend/calculadora-emprestimos
+   Abra o diretório calculadora-TOTVS/backend/calculadora-emprestimos no terminal
 
 2. Compile o Projeto  
-   Utilize o wrapper Maven (mvnw) para compilar e empacotar a aplicação, pulando os testes:  
-   ./mvnw clean package \-DskipTests
+   Utilize o seguinte comando para o Maven compilar e empacotar a aplicação:  
+   ./mvnw clean package
 
 3. Execute o JAR  
-   Inicie o servidor Spring Boot com o arquivo JAR gerado no diretório target/:  
-   java \-jar target/\*.jar
+   Inicie o servidor Spring Boot com o arquivo JAR gerado em backend/calculadora-emprestimos/target que terá o nome totvs-calculator-api-0.0.1-SNAPSHOT.jar com o comando:  
+   java \-jar target/totvs-calculator-api-0.0.1-SNAPSHOT.jar
 
-   * O Backend estará rodando em http://localhost:8080.
+   * O Backend rodará em http://localhost:8080.
 
 ### **2.3. Iniciando o Frontend (React)**
 
 1. **Navegue até o diretório do frontend:**  
-   cd frontend/calculadora-emprestimos-ui
+   Abra o diretório calculadora-TOTVS/frontend/calculadora-emprestimos-ui no terminal
 
 2. **Instale as Dependências**  
    npm install
