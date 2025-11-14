@@ -18,13 +18,15 @@ Este projeto é uma aplicação full-stack para cálculo e geração de uma tabe
 
    docker-compose up \--build \-d
 
-   * O argumento \--build forçará a construção das imagens Java e Node/Nginx com base nos Dockerfiles contidos no backend e no frontend.  
+   * O argumento \--build forçará a construção das imagens Java e Node/Nginx com base nos Dockerfiles contidos no Backend e no Frontend.  
 
    * O comando \-d (detach) executa os contêineres em segundo plano.  
 2. Acesse a Aplicação  
    Após o Docker Compose finalizar o build e a inicialização, os seguintes serviços estarão disponíveis:  
    * **Frontend (Calculadora):** http://localhost:3000  
    * **Backend (API):** http://localhost:8080 (Acesso direto à API para testes).
+  
+**Observação sobre o Docker Compose:** O contêiner do Frontend aguarda a inicialização do contêiner do Backend (depends\_on: \- backend) e mapeia a porta 80 interna do Nginx para a porta 3000 externa do seu host.
 
 ### **Comandos Úteis do Docker**
 
@@ -49,9 +51,9 @@ Requer a instalação manual das dependências de cada ambiente.
 
 ### **2.2. Iniciando o Backend (Java Spring Boot)**
 
-O backend deve ser iniciado primeiro, porque o frontend depende dele para fazer os cálculos.
+O Backend deve ser iniciado primeiro, porque o Frontend depende dele para fazer os cálculos.
 
-1. **Navegue até o diretório do backend:**  
+1. **Navegue até o diretório do Backend:**  
    Abra o diretório calculadora-TOTVS/backend/calculadora-emprestimos no terminal
 
 2. Compile o Projeto  
@@ -59,31 +61,25 @@ O backend deve ser iniciado primeiro, porque o frontend depende dele para fazer 
    ./mvnw clean package
 
 3. Execute o JAR  
-   Inicie o servidor Spring Boot com o arquivo JAR gerado em backend/calculadora-emprestimos/target que terá o nome totvs-calculator-api-0.0.1-SNAPSHOT.jar com o comando:  
+   Inicie o servidor Spring Boot com o arquivo JAR gerado em backend/calculadora-emprestimos/target que terá o nome totvs-calculator-api-0.0.1-SNAPSHOT.jar com o comando:
+   
    java \-jar target/totvs-calculator-api-0.0.1-SNAPSHOT.jar
 
-   * O Backend rodará em http://localhost:8080.
+   * O Backend rodará em http://localhost:8080 (Acesso direto sem Frontend à API para testes).
 
 ### **2.3. Iniciando o Frontend (React)**
 
-1. **Navegue até o diretório do frontend:**  
+1. **Navegue até o diretório do Frontend:**  
    Abra o diretório calculadora-TOTVS/frontend/calculadora-emprestimos-ui no terminal
 
-2. **Instale as Dependências**  
+2. **Instale as Dependências**
+   Para instalar as depêndencias do Frontend, no terminal execute o comando:
+   
    npm install
 
-3. **Inicie o Servidor de Desenvolvimento**  
-   npm run dev  
-   \# ou, dependendo da sua configuração:  
-   npm start
+4. **Inicie o Servidor de Desenvolvimento**
+   Para iniciar a execução do Frontend, no terminal execute o comando:
+   
+   npm run dev 
 
-   * O Frontend estará acessível em http://localhost:3000.
-
-## **3\. Estrutura e Configurações**
-
-| Componente | Diretório | Tecnologia | Porta | Perfil Docker |
-| :---- | :---- | :---- | :---- | :---- |
-| **Backend** | ./backend/calculadora-emprestimos | Java 21, Spring Boot | 8080 | prod (via docker-compose) |
-| **Frontend** | ./frontend/calculadora-emprestimos-ui | Node 20, React, Nginx | 3000 | N/A |
-
-**Observação sobre o Docker Compose:** O contêiner do Frontend aguarda a inicialização do contêiner do Backend (depends\_on: \- backend) e mapeia a porta 80 interna do Nginx para a porta 3000 externa do seu host.
+   * O Frontend estará acessível em http://localhost:5173.
