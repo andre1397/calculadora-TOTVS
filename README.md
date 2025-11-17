@@ -20,7 +20,7 @@ Este projeto é uma aplicação full-stack para cálculo e geração de uma tabe
 
    * O argumento \--build forçará a construção das imagens Java e Node/Nginx com base nos Dockerfiles contidos no Backend e no Frontend.  
 
-   * O comando \-d (detach) executa os contêineres em segundo plano.  
+   * O comando \-d (detach) é opcional, ele executa os contêineres em segundo plano.  
 2. Acesse a Aplicação  
    Após o Docker Compose finalizar o build e a inicialização, os seguintes serviços estarão disponíveis:  
    * **Frontend (Calculadora):** http://localhost:3000  
@@ -47,7 +47,7 @@ Requer a instalação manual das dependências de cada ambiente.
 | **Backend** | **JDK (Java Development Kit)** | 21 |
 | **Frontend** | **Node.js** | 20.x |
 | **Geral** | **Maven** (Opcional, pois o mvnw está incluso) | 3.x |
-| **Geral** | **npm** ou **yarn** | Mais recente |
+| **Geral** | **npm** | Mais recente |
 
 ### **2.2. Iniciando o Backend (Java Spring Boot)**
 
@@ -59,7 +59,11 @@ O Backend deve ser iniciado primeiro, porque o Frontend depende dele para fazer 
 2. Compile o Projeto  
    Utilize o seguinte comando para o Maven compilar e empacotar a aplicação:
    
-   ./mvnw clean package
+   mvnw clean package
+
+   ou se quiser pular a execção dos testes unitários, use:
+
+   mvnw clean package -DskipTests
 
 4. Execute o JAR  
    Inicie o servidor Spring Boot com o arquivo JAR gerado em backend/calculadora-emprestimos/target que terá o nome totvs-calculator-api-0.0.1-SNAPSHOT.jar com o comando:
@@ -84,3 +88,34 @@ O Backend deve ser iniciado primeiro, porque o Frontend depende dele para fazer 
    npm run dev 
 
    * O Frontend estará acessível em http://localhost:5173.
+
+# Testes Unitários (CalculatorServiceTest)
+Os testes unitários garantem a precisão do motor de cálculo de amortização e a correta aplicação das regras de negócio, como o ajuste de datas e a inclusão das linhas de provisão.
+
+1. Execução dos Testes
+Para rodar todos os testes unitários do Backend do projeto, execute na no terminal da raiz do Backend (calculadora-TOVS/backend/calculadora-emprestimos):
+
+   mvn test
+
+2. Detalhes da Tabela de Amortização (SAC)
+   O CalculatorServiceTest foi contruído para validar a estrutura detalhada do LoanInstallmentDto, que exige a inclusão de linhas de provisão de juros.
+   
+   * Comportamento Esperado: Para um empréstimo SAC, a tabela de amortização deve incluir todos os eventos de cálculo de juros, mesmo que não sejam um pagamento.
+   
+   * O principal teste (calculate_SacLoanWithProvisionLines) verifica se a lista de parcelas gerada sempre contém:
+   
+      - 1 Linha Inicial (Saldo Devedor na Data de Início).
+   
+      - Linhas de Provisão: Uma linha no último dia de cada mês para registrar a provisão de juros acumulados (Saldo Devedor Capital + Juros Acumulados).
+   
+      - Linhas de Pagamento: Uma linha na data de pagamento ajustada (próximo dia útil) que zera o saldo de juros acumulados (accumulated) e registra a amortização (amortization).
+   
+   Exemplo:
+   Para um empréstimo de 3 parcelas, o sistema deve gerar 7 linhas de evento (1 Início + 3 Provisões + 3 Pagamentos) para garantir a conformidade com os requisitos contábeis de provisão mensal.
+
+3. Validação de Regras
+   Os testes também verificam:
+   
+   * Ajuste de Datas: Datas de pagamento que caem em finais de semana ou feriados são corretamente ajustadas para o próximo dia útil.
+   
+   * Arredondamento Financeiro: Os saldos e amortizações são verificados em BigDecimal para garantir que o arredondamento de centavos esteja correto ao longo das parcelas.
