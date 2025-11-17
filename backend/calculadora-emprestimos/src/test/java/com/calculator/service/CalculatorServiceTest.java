@@ -36,10 +36,8 @@ class CalculatorServiceTest {
     @DisplayName("Deve identificar um feriado fixo corretamente (Natal)")
     void isHoliday_FixedHoliday() throws Exception {
         LocalDate natal = LocalDate.of(2025, 12, 25);
-        java.lang.reflect.Method isHoliday = CalculatorService.class.getDeclaredMethod("isHoliday", LocalDate.class);
-        isHoliday.setAccessible(true);
-        
-        assertTrue((Boolean) isHoliday.invoke(service, natal), "O Natal deve ser reconhecido como feriado.");
+    
+        assertTrue(service.isHoliday(natal), "O Natal deve ser reconhecido como feriado.");
     }
     
     @Test
@@ -47,12 +45,9 @@ class CalculatorServiceTest {
     void getNextBusinessDay_AdjustsCorrectly() throws Exception {
         LocalDate dataProblematica = LocalDate.of(2025, 11, 15); 
         LocalDate proximoDiaUtilEsperado = LocalDate.of(2025, 11, 17);
-        
-        java.lang.reflect.Method getNextBusinessDay = CalculatorService.class.getDeclaredMethod("getNextBusinessDay", LocalDate.class);
-        getNextBusinessDay.setAccessible(true);
-
-        assertEquals(proximoDiaUtilEsperado, getNextBusinessDay.invoke(service, dataProblematica), 
-                      "A data de pagamento deve ser ajustada para a próxima segunda-feira.");
+    
+        assertEquals(proximoDiaUtilEsperado, service.getNextBusinessDay(dataProblematica), 
+                 "A data de pagamento deve ser ajustada para a próxima segunda-feira.");
     }
 
     @Test

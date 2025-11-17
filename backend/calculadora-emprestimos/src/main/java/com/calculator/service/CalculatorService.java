@@ -46,15 +46,15 @@ public class CalculatorService {
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }
 
-    private boolean isHoliday(LocalDate date) {
+    boolean isHoliday(LocalDate date) {
         return FIXED_HOLIDAYS.contains(MonthDay.from(date));
     }
 
-    private boolean isBusinessDay(LocalDate date) {
+    boolean isBusinessDay(LocalDate date) {
         return !isWeekend(date) && !isHoliday(date);
     }
 
-    private LocalDate getNextBusinessDay(LocalDate date) {
+    LocalDate getNextBusinessDay(LocalDate date) {
         LocalDate nextDay = date;
         while (!isBusinessDay(nextDay)) {
             nextDay = nextDay.plusDays(1);
@@ -183,7 +183,7 @@ public class CalculatorService {
      * Valida as regras de negócio de data
      * @param request
      */
-    protected void validateBusinessRules(LoanRequestDto request) {
+    void validateBusinessRules(LoanRequestDto request) {
         if (request.finalDate().isBefore(request.startDate())) {
             throw new DateException("A data final deve ser maior que a data inicial");
         }
@@ -199,7 +199,7 @@ public class CalculatorService {
      * @param firstPaymentDate
      * @return
      */
-    private SortedSet<LocalDate> generateEventDates(LocalDate startDate, LocalDate finalDate, LocalDate firstPaymentDate) {
+    SortedSet<LocalDate> generateEventDates(LocalDate startDate, LocalDate finalDate, LocalDate firstPaymentDate) {
         SortedSet<LocalDate> dates = new TreeSet<>();
         dates.add(startDate);
 
