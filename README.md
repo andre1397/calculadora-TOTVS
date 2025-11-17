@@ -89,7 +89,7 @@ O Backend deve ser iniciado primeiro, porque o Frontend depende dele para fazer 
 
    * O Frontend estará acessível em http://localhost:5173.
 
-# Testes Unitários (CalculatorServiceTest)
+# Testes Unitários
 Os testes unitários garantem a precisão do motor de cálculo de amortização e a correta aplicação das regras de negócio, como o ajuste de datas e a inclusão das linhas de provisão.
 
 1. Execução dos Testes
@@ -97,7 +97,7 @@ Para rodar todos os testes unitários do Backend do projeto, execute na no termi
 
    mvn test
 
-2. Detalhes da Tabela de Amortização (SAC)
+2. Detalhes da Tabela de Amortização
    O CalculatorServiceTest foi contruído para validar a estrutura detalhada do LoanInstallmentDto, que exige a inclusão de linhas de provisão de juros.
    
    * Comportamento Esperado: Para um empréstimo SAC, a tabela de amortização deve incluir todos os eventos de cálculo de juros, mesmo que não sejam um pagamento.
