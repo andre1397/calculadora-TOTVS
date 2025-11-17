@@ -183,7 +183,7 @@ public class CalculatorService {
      * Valida as regras de negócio de data
      * @param request
      */
-    private void validateBusinessRules(LoanRequestDto request) {
+    protected void validateBusinessRules(LoanRequestDto request) {
         if (request.finalDate().isBefore(request.startDate())) {
             throw new DateException("A data final deve ser maior que a data inicial");
         }

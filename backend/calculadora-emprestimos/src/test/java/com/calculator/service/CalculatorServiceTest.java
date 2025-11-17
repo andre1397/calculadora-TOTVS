@@ -63,8 +63,8 @@ class CalculatorServiceTest {
         LocalDate firstPayment = LocalDate.of(2025, 2, 1);
         LoanRequestDto request = createRequest(start, end, firstPayment, BigDecimal.TEN, BigDecimal.ZERO);
 
-        assertThrows(DateException.class, () -> 
-            service.calculate(request), "Deve lançar exceção para data final inválida.");
+        Exception exception = assertThrows(DateException.class, () -> service.validateBusinessRules(request));
+        assertEquals("Erro: A data final deve ser maior que a data inicial", exception.getMessage());
     }
     
     @ParameterizedTest
