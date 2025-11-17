@@ -97,8 +97,9 @@ Para rodar todos os testes unitários do Backend do projeto, execute na no termi
 
    mvn test
 
-2. Detalhes da Tabela de Amortização
-   O CalculatorServiceTest foi contruído para validar a estrutura detalhada do LoanInstallmentDto, que exige a inclusão de linhas de provisão de juros.
+2. Detalhes da Tabela de Amortização:
+ 
+   O CalculatorServiceTest foi construído para validar a estrutura detalhada do LoanInstallmentDto, que exige a inclusão de linhas de provisão de juros.
    
    * Comportamento Esperado: Para um empréstimo SAC, a tabela de amortização deve incluir todos os eventos de cálculo de juros, mesmo que não sejam um pagamento.
    
@@ -113,7 +114,8 @@ Para rodar todos os testes unitários do Backend do projeto, execute na no termi
    Exemplo:
    Para um empréstimo de 3 parcelas, o sistema deve gerar 7 linhas de evento (1 Início + 3 Provisões + 3 Pagamentos) para garantir a conformidade com os requisitos contábeis de provisão mensal.
 
-3. Validação de Regras
+3. Validação de Regras:
+   
    Os testes também verificam:
    
    * Ajuste de Datas: Datas de pagamento que caem em finais de semana ou feriados são corretamente ajustadas para o próximo dia útil.
