@@ -2,13 +2,18 @@ package com.calculator.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -23,18 +28,47 @@ public class CalculatorService {
     private static final int CALCULATION_SCALE = 30;
     private static final int CURRENCY_SCALE = 2;
     private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
+    private static final Set<MonthDay> FIXED_HOLIDAYS = new HashSet<>();
 
-    /**
-     * Calcula e retorna uma lista com as parcelas de um empréstimo
-     * @param request
-     * @return
-     */
+    static {
+        FIXED_HOLIDAYS.add(MonthDay.of(1, 1));
+        FIXED_HOLIDAYS.add(MonthDay.of(4, 21));
+        FIXED_HOLIDAYS.add(MonthDay.of(5, 1));
+        FIXED_HOLIDAYS.add(MonthDay.of(9, 7));
+        FIXED_HOLIDAYS.add(MonthDay.of(10, 12));
+        FIXED_HOLIDAYS.add(MonthDay.of(11, 2));
+        FIXED_HOLIDAYS.add(MonthDay.of(11, 15));
+        FIXED_HOLIDAYS.add(MonthDay.of(12, 25));
+    }
+
+    private boolean isWeekend(LocalDate date) {
+        DayOfWeek day = date.getDayOfWeek();
+        return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
+    }
+
+    private boolean isHoliday(LocalDate date) {
+        return FIXED_HOLIDAYS.contains(MonthDay.from(date));
+    }
+
+    private boolean isBusinessDay(LocalDate date) {
+        return !isWeekend(date) && !isHoliday(date);
+    }
+
+    private LocalDate getNextBusinessDay(LocalDate date) {
+        LocalDate nextDay = date;
+        while (!isBusinessDay(nextDay)) {
+            nextDay = nextDay.plusDays(1);
+        }
+        return nextDay;
+    }
+
     public List<LoanInstallmentDto> calculate(LoanRequestDto request) {
         validateBusinessRules(request);  
 
         LocalDate startDate = request.startDate();
         LocalDate finalDate = request.finalDate();
-        LocalDate firstPaymentDate = request.firstPaymentDate();
+        LocalDate firstPaymentDate = getNextBusinessDay(request.firstPaymentDate());
+        
         BigDecimal loanAmount = request.loanAmount();
 
         SortedSet<LocalDate> eventDates = generateEventDates(
@@ -49,10 +83,20 @@ public class CalculatorService {
                 .toList());
 
         if (!paymentDates.contains(finalDate)) {
-             paymentDates.add(finalDate);
+            paymentDates.add(finalDate);
         }
 
-        int numberOfInstallments = paymentDates.size();
+        List<LocalDate> adjustedPaymentDates = paymentDates.stream()
+                .map(this::getNextBusinessDay)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+
+        SortedSet<LocalDate> allEventDates = new TreeSet<>(eventDates);
+        allEventDates.addAll(adjustedPaymentDates);
+
+
+        int numberOfInstallments = adjustedPaymentDates.size();
         if (numberOfInstallments == 0) {
             throw new NotFoundInstallments("Nenhuma parcela de pagamento encontrada no período.");
         }
@@ -67,19 +111,12 @@ public class CalculatorService {
         int currentInstallment = 0; 
 
         InstallmentList.add(new LoanInstallmentDto(
-                startDate,
-                loanAmount,
-                loanAmount,
-                null,
-                BigDecimal.ZERO,
-                BigDecimal.ZERO,
-                principalBalance,
-                BigDecimal.ZERO,
-                BigDecimal.ZERO,
-                BigDecimal.ZERO
+                startDate, loanAmount, loanAmount, null,
+                BigDecimal.ZERO, BigDecimal.ZERO, principalBalance,
+                BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO
         ));
 
-        for (LocalDate currentDate : eventDates) {
+        for (LocalDate currentDate : allEventDates) {
             if (currentDate.isEqual(startDate)) {
                 continue;
             }
@@ -104,7 +141,7 @@ public class CalculatorService {
             BigDecimal totalInstallmentPayment = BigDecimal.ZERO;
             String consolidatedLabel = null;
 
-            if (paymentDates.contains(currentDate)) {
+            if (adjustedPaymentDates.contains(currentDate)) {
                 currentInstallment++;
                 amortizationPaid = constantAmortization;
                 interestPaid = accumulatedInterest;
